@@ -1,21 +1,24 @@
 import { auth, signIn, signOut } from "auth";
 
+import { getUserByEmail } from "@/action";
+
 import Link from "next/link";
 
 const Navbar = async () => {
   const session = await auth();
 
+  const user = await getUserByEmail(session?.user.email);
+
   return (
-    <div className="bg-gray-800 text-white p-4 flex justify-between items-center">
-      <Link href="/" className="text-white text-lg font-bold">
-        Home
+    <div className="bg-gray-100 px-10 py-5 flex justify-between items-center shadow-[0_5px_5px_rgba(0,0,0,0.2)]">
+      <Link href="/" className=" text-lg font-bold">
+        Nextgram
       </Link>
       <div>
-        {session && session.user ? (
+        {user ? (
           // Logado
           <div className="flex gap-4 items-center">
-            {/* login social => name, email, image */}
-            <p>{session.user.name}</p>
+            <p>{user.name}</p>
             <form
               action={async () => {
                 "use server";
