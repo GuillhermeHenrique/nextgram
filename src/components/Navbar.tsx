@@ -29,7 +29,7 @@ const Navbar = async () => {
               <Image
                 src={user.image}
                 alt={`Perfil de: ${user.name}`}
-                className="w-10 h-10 rounded-full"
+                className="w-10 h-10 rounded-full object-cover"
                 width={40}
                 height={40}
               />
@@ -44,7 +44,7 @@ const Navbar = async () => {
               href={"/post/new"}
               className="font-medium hover:text-gray-900 transition duration-300"
             >
-              Criar perfil
+              Criar postagem
             </Link>
             <Link
               href={"/my-posts"}
