@@ -79,3 +79,42 @@ export async function updateUserProfile(
 
   return { message: "Perfil atualizado com sucesso!", type: "success" };
 }
+
+// Criar posts
+export async function createPost(
+  formState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const session = await auth();
+
+  if (!session) redirect("/");
+
+  const caption = formData.get("caption") as string;
+  const imageFile = formData.get("image") as File;
+
+  if (!caption || imageFile.size === 0) {
+    return { message: "Legenda e fotos são obrigatórios!", type: "error" };
+  }
+
+  const uploadDir = path.join(process.cwd(), "public", "uploads");
+  // Criar o repositório/pasta
+  await fs.mkdir(uploadDir, { recursive: true });
+  const filePath = path.join(uploadDir, imageFile.name);
+  const arrayBuffer = await imageFile.arrayBuffer();
+  // Criar o arquivo no diretório
+  await fs.writeFile(filePath, Buffer.from(arrayBuffer));
+
+  const imageUrl = `/uploads/${imageFile.name}`;
+
+  await prisma.post.create({
+    data: {
+      imageUrl,
+      caption,
+      userId: session.user.userId,
+    },
+  });
+
+  revalidatePath("/");
+
+  redirect("/");
+}
