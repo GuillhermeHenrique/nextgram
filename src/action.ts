@@ -118,3 +118,26 @@ export async function createPost(
 
   redirect("/");
 }
+
+// Resgatar posts do usuário
+export const getUserPosts = async (userId: string) => {
+  const session = await auth();
+
+  if (!session) return redirect("/");
+
+  if (session.user.userId !== userId) {
+    throw new Error("Não autorizado!");
+  }
+
+  return await prisma.post.findMany({
+    where: { userId },
+    include: {
+      user: true,
+      likes: true,
+      comments: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
