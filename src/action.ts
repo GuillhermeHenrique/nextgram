@@ -163,3 +163,21 @@ export const deletePost = async (formData: FormData) => {
 
   redirect("/my-posts");
 };
+
+// Resgatar posts do usuário
+export const getAllPosts = async () => {
+  return await prisma.post.findMany({
+    include: {
+      user: true,
+      likes: true,
+      comments: {
+        include: {
+          user: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
