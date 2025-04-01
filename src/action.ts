@@ -141,3 +141,25 @@ export const getUserPosts = async (userId: string) => {
     },
   });
 };
+
+// Deletar uma postagem
+export const deletePost = async (formData: FormData) => {
+  const session = await auth();
+
+  if (!session) return redirect("/");
+
+  const userId = formData.get("userId") as string;
+  const postId = formData.get("postId") as string;
+
+  if (session.user.userId !== userId) {
+    throw new Error("Não autorizado!");
+  }
+
+  await prisma.post.delete({
+    where: { id: postId },
+  });
+
+  revalidatePath("/my-posts");
+
+  redirect("/my-posts");
+};

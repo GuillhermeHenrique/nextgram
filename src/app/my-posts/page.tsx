@@ -1,13 +1,14 @@
-import { getUserPosts } from "@/action";
-import Button from "@/components/Button";
-
-import ButtonLink from "@/components/ButtonLink";
+import { deletePost, getUserPosts } from "@/action";
 
 import { auth } from "auth";
 
 import Image from "next/image";
 
 import { redirect } from "next/navigation";
+
+//Components
+import Button from "@/components/Button";
+import ButtonLink from "@/components/ButtonLink";
 
 const MyPostsPage = async () => {
   const session = await auth();
@@ -28,8 +29,8 @@ const MyPostsPage = async () => {
         Minhas postagens
       </h1>
       {posts.length === 0 ? (
-        <div className="bg-white text-center">
-          <p className="mb-4 font-medium">Você ainda não tem postagens.</p>
+        <div className="p-5 bg-white text-center w-[400px] mx-auto rounded">
+          <p className="mb-4 font-medium">Você ainda não tem postagens</p>
           <div className="flex justify-center">
             <ButtonLink text="Criar nova postagem" url="/post/new" />
           </div>
@@ -48,7 +49,7 @@ const MyPostsPage = async () => {
               {post.caption && (
                 <p className="mb-2 text-sm font-medium">{post.caption}</p>
               )}
-              <form>
+              <form action={deletePost}>
                 <input type="hidden" name="userId" value={userId} />
                 <input type="hidden" name="postId" value={post.id} />
                 <div className="flex justify-end">
