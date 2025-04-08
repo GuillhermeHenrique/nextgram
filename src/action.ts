@@ -181,3 +181,39 @@ export const getAllPosts = async () => {
     },
   });
 };
+
+// Like no post
+export async function likePost(postId: string, userId: string) {
+  const session = await auth();
+
+  if (!session) return redirect("/");
+
+  if (session.user.userId !== userId) {
+    throw new Error("Não autorizado!");
+  }
+
+  // Verificar se o like existe
+  const existingLike = await prisma.like.findFirst({
+    where: {
+      userId,
+      postId,
+    },
+  });
+
+  if (existingLike) {
+    await prisma.like.delete({
+      where: {
+        id: existingLike.id,
+      },
+    });
+  } else {
+    await prisma.like.create({
+      data: {
+        postId,
+        userId,
+      },
+    });
+  }
+
+  revalidatePath("/");
+}

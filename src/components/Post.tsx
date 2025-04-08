@@ -4,14 +4,22 @@ import Image from "next/image";
 
 import { Post as PostType } from "types/Post";
 
+import LikeButton from "./Post/LikeButton";
+
 interface PostProps {
   post: PostType;
   currentUserId?: string;
 }
 
 const Post: React.FC<PostProps> = ({ post, currentUserId }) => {
+  let isLiked = false;
+
+  if (post.likes) {
+    isLiked = post.likes.some((like) => like.userId === currentUserId);
+  }
+
   return (
-    <div className="bg-white w-fit mx-auto mb-6 p-4 border rounded shadow-sm">
+    <div className="bg-white w-fit mx-auto mb-6 p-4 rounded-lg shadow-sm">
       <div className="flex items-center">
         {post.user.image && (
           <Image
@@ -34,7 +42,14 @@ const Post: React.FC<PostProps> = ({ post, currentUserId }) => {
       {post.caption && (
         <p className="mb-4 text-sm font-medium">{post.caption}</p>
       )}
-      <div className="flex items-center mt-4">Ações...</div>
+      <div className="flex items-center mt-4">
+        <LikeButton
+          postId={post.id}
+          initialLikesCount={post.likes?.length ? post.likes.length : 0}
+          isLiked={isLiked}
+          currentUserId={currentUserId}
+        />
+      </div>
     </div>
   );
 };
