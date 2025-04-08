@@ -1,4 +1,4 @@
-import { auth, signIn, signOut } from "auth";
+import { auth, signOut } from "auth";
 
 import { getUserByEmail } from "@/action";
 
