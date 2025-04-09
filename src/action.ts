@@ -217,3 +217,27 @@ export async function likePost(postId: string, userId: string) {
 
   revalidatePath("/");
 }
+
+export const addComment = async (
+  postId: string,
+  userId: string,
+  content: string
+) => {
+  const session = await auth();
+
+  if (!session) redirect("/");
+
+  if (session.user.userId !== userId) {
+    throw new Error("Não autorizado!");
+  }
+
+  await prisma.comment.create({
+    data: {
+      userId,
+      postId,
+      content,
+    },
+  });
+
+  revalidatePath("/");
+};

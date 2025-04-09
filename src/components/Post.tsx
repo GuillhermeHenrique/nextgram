@@ -4,7 +4,13 @@ import Image from "next/image";
 
 import { Post as PostType } from "types/Post";
 
+//components
 import LikeButton from "./Post/LikeButton";
+import CommentModal from "./Post/CommentModal";
+
+import { FiMessageSquare } from "react-icons/fi";
+
+import { useState } from "react";
 
 interface PostProps {
   post: PostType;
@@ -17,6 +23,8 @@ const Post: React.FC<PostProps> = ({ post, currentUserId }) => {
   if (post.likes) {
     isLiked = post.likes.some((like) => like.userId === currentUserId);
   }
+
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
 
   return (
     <div className="bg-white w-fit mx-auto mb-6 p-4 rounded-lg shadow-sm">
@@ -49,7 +57,22 @@ const Post: React.FC<PostProps> = ({ post, currentUserId }) => {
           isLiked={isLiked}
           currentUserId={currentUserId}
         />
+        <button
+          className="items-center ml-4 flex"
+          onClick={() => setIsCommentModalOpen(true)}
+        >
+          <FiMessageSquare className="w-6 h-6 text-zinc-400" />
+          <span className="ml-1">
+            {post.comments ? post.comments.length : 0}
+          </span>
+        </button>
       </div>
+      <CommentModal
+        post={post}
+        currentUserId={currentUserId}
+        isOpen={isCommentModalOpen}
+        onRequestClose={() => setIsCommentModalOpen(false)}
+      />
     </div>
   );
 };
